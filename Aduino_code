@@ -1,0 +1,47 @@
+#define BLYNK_TEMPLATE_ID "TMPL3emk9dG-t"
+#define BLYNK_TEMPLATE_NAME "security"
+#define BLYNK_AUTH_TOKEN "HRXDqQTXoOqLK31Q-HJb70mteNbFvT9X"
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "Param";  
+char pass[] = "123456789";  
+
+#define IR1_PIN 4  
+#define IR2_PIN 14  
+
+void setup() {
+  
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+  
+  pinMode(IR1_PIN, INPUT);
+  pinMode(IR2_PIN, INPUT);
+}
+
+void loop() {
+  
+  Blynk.run();
+  int ir1Value = digitalRead(IR1_PIN);
+  int ir2Value = digitalRead(IR2_PIN);
+ /* Serial.println("reading value ");
+  Serial.print(ir1Value); 
+  Serial.print("   ");
+  Serial.println(ir2Value);*/
+  if (ir1Value == LOW && ir2Value == LOW) {
+    
+    Serial.println("Both sensors detected. No action taken.");
+
+  } else if (ir1Value == HIGH && ir2Value == LOW) {
+   
+    Serial.println("Person detected!");
+    Blynk.logEvent("kid_gone");
+  } else {
+    Serial.println("No detection or only upper sensor detected.");
+  }
+
+  
+ delay(500);
+}
